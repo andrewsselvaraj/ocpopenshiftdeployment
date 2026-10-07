@@ -1,0 +1,106 @@
+# Docker-strategy builds using the repository's Dockerfile.
+# Build from Git:          oc start-build auth-service --follow
+# Build from local source: oc start-build auth-service --from-dir=. --follow
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: auth-service
+  labels: { app.kubernetes.io/part-of: online-exam, app.kubernetes.io/name: auth-service }
+spec:
+  runPolicy: Serial
+  source:
+    type: Git
+    git:
+      uri: https://github.com/andrewsselvaraj/ocpopenshiftdeployment.git
+      ref: main
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+      buildArgs:
+        - { name: SERVICE, value: auth-service }
+  output:
+    to: { kind: ImageStreamTag, name: "auth-service:latest" }
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { memory: 2Gi }
+  successfulBuildsHistoryLimit: 3
+  failedBuildsHistoryLimit: 3
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: org-service
+  labels: { app.kubernetes.io/part-of: online-exam, app.kubernetes.io/name: org-service }
+spec:
+  runPolicy: Serial
+  source:
+    type: Git
+    git:
+      uri: https://github.com/andrewsselvaraj/ocpopenshiftdeployment.git
+      ref: main
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+      buildArgs:
+        - { name: SERVICE, value: org-service }
+  output:
+    to: { kind: ImageStreamTag, name: "org-service:latest" }
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { memory: 2Gi }
+  successfulBuildsHistoryLimit: 3
+  failedBuildsHistoryLimit: 3
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: question-service
+  labels: { app.kubernetes.io/part-of: online-exam, app.kubernetes.io/name: question-service }
+spec:
+  runPolicy: Serial
+  source:
+    type: Git
+    git:
+      uri: https://github.com/andrewsselvaraj/ocpopenshiftdeployment.git
+      ref: main
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+      buildArgs:
+        - { name: SERVICE, value: question-service }
+  output:
+    to: { kind: ImageStreamTag, name: "question-service:latest" }
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { memory: 2Gi }
+  successfulBuildsHistoryLimit: 3
+  failedBuildsHistoryLimit: 3
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: exam-service
+  labels: { app.kubernetes.io/part-of: online-exam, app.kubernetes.io/name: exam-service }
+spec:
+  runPolicy: Serial
+  source:
+    type: Git
+    git:
+      uri: https://github.com/andrewsselvaraj/ocpopenshiftdeployment.git
+      ref: main
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+      buildArgs:
+        - { name: SERVICE, value: exam-service }
+  output:
+    to: { kind: ImageStreamTag, name: "exam-service:latest" }
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { memory: 2Gi }
+  successfulBuildsHistoryLimit: 3
+  failedBuildsHistoryLimit: 3

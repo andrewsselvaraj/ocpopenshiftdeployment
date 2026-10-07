@@ -1,0 +1,49 @@
+# One edge-terminated HTTPS Route per service on the cluster's default apps domain
+# (e.g. auth-service-online-exam.apps.<cluster>). Only the "http" port is exposed - never actuator.
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: auth-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  to: { kind: Service, name: auth-service }
+  port: { targetPort: http }
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: org-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  to: { kind: Service, name: org-service }
+  port: { targetPort: http }
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: question-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  to: { kind: Service, name: question-service }
+  port: { targetPort: http }
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: exam-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  to: { kind: Service, name: exam-service }
+  port: { targetPort: http }
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

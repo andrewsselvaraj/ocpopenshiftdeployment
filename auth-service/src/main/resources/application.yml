@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: auth-service
+  config:
+    import: classpath:common.yml
+  flyway:
+    # Each service keeps its own migration history in the shared m2its schema.
+    table: flyway_history_auth
+
+app:
+  security:
+    jwt:
+      public-paths:
+        - POST /api/auth/login
+  bootstrap:
+    admin-email: ${BOOTSTRAP_ADMIN_EMAIL:}
+    admin-password: ${BOOTSTRAP_ADMIN_PASSWORD:}

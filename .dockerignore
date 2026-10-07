@@ -1,0 +1,10 @@
+**/target/
+.git/
+.github/
+.idea/
+.vscode/
+docs/
+k8s/
+scripts/
+*.sql
+*.env

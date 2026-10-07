@@ -1,0 +1,47 @@
+# Red Hat OpenShift (OCP 4.x). Images are built in-cluster by the BuildConfigs and stored in
+# ImageStreams; each Deployment rolls out automatically when a new image is pushed.
+#   oc project online-exam
+#   oc apply -k k8s/overlays/openshift
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+  - imagestreams.yaml
+  - buildconfigs.yaml
+  - routes.yaml
+  - networkpolicy-openshift.yaml
+  - servicemonitor.yaml
+
+# Short names resolve through the ImageStreams (lookupPolicy.local: true).
+images:
+  - { name: auth-service, newName: auth-service, newTag: latest }
+  - { name: org-service, newName: org-service, newTag: latest }
+  - { name: question-service, newName: question-service, newTag: latest }
+  - { name: exam-service, newName: exam-service, newTag: latest }
+
+patches:
+  - target: { kind: Deployment, name: auth-service }
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"auth-service:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"auth-service\")].image"}]'
+  - target: { kind: Deployment, name: org-service }
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"org-service:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"org-service\")].image"}]'
+  - target: { kind: Deployment, name: question-service }
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"question-service:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"question-service\")].image"}]'
+  - target: { kind: Deployment, name: exam-service }
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"exam-service:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"exam-service\")].image"}]'

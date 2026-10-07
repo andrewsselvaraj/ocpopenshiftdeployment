@@ -1,0 +1,24 @@
+# Vanilla Kubernetes (kind, minikube, AKS, EKS, GKE, ...) with the NGINX ingress controller.
+#   kubectl apply -k k8s/overlays/kubernetes -n online-exam
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+  - ingress.yaml
+  - networkpolicy-ingress.yaml
+
+# Images pushed by CI (.github/workflows/ci.yml). Change the tag to deploy another version.
+images:
+  - name: auth-service
+    newName: ghcr.io/andrewsselvaraj/online-exam/auth-service
+    newTag: latest
+  - name: org-service
+    newName: ghcr.io/andrewsselvaraj/online-exam/org-service
+    newTag: latest
+  - name: question-service
+    newName: ghcr.io/andrewsselvaraj/online-exam/question-service
+    newTag: latest
+  - name: exam-service
+    newName: ghcr.io/andrewsselvaraj/online-exam/exam-service
+    newTag: latest

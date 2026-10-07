@@ -1,0 +1,35 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: auth-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  lookupPolicy:
+    local: true
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: org-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  lookupPolicy:
+    local: true
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: question-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  lookupPolicy:
+    local: true
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: exam-service
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  lookupPolicy:
+    local: true

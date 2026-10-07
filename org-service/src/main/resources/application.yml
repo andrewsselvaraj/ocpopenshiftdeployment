@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: org-service
+  config:
+    import: classpath:common.yml
+  flyway:
+    table: flyway_history_org
+
+app:
+  security:
+    jwt:
+      public-paths:
+        - POST /api/contact

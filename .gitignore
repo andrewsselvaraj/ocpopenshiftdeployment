@@ -1,0 +1,14 @@
+target/
+*.log
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Local secrets - never commit
+*.env
+!*.env.example
+
+# The legacy dump contains real names, e-mails and plain-text passwords.
+# Keep it out of version control; load it into the database directly (see docs/DEPLOYMENT-GUIDE.md).
+m2itssql_complete.sql

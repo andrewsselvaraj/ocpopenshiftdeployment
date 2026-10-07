@@ -1,0 +1,17 @@
+# Plain Kubernetes: the volume must be writable by the image's mysql user (UID 27).
+# OpenShift does this automatically through the SCC, so use k8s/database/base directly there.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+patches:
+  - target:
+      kind: StatefulSet
+      name: mysql
+    patch: |-
+      - op: add
+        path: /spec/template/spec/securityContext/fsGroup
+        value: 27
+      - op: add
+        path: /spec/template/spec/securityContext/runAsUser
+        value: 27

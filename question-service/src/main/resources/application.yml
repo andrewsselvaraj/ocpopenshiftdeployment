@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: question-service
+  config:
+    import: classpath:common.yml
+  flyway:
+    table: flyway_history_question

@@ -1,0 +1,16 @@
+# Pods of the application accept traffic only from:
+#  - other pods in the same namespace (service-to-service calls),
+#  - the ingress controller / OpenShift router (added per overlay),
+#  - Prometheus on the management port (added per overlay).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: online-exam-allow-same-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: online-exam
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: {}

@@ -1,0 +1,26 @@
+# One public host; requests are routed to a service by URL prefix.
+# Actuator (port 8081) is never exposed.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: online-exam
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2m
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: exam.example.com
+      http:
+        paths:
+          - { path: /api/auth, pathType: Prefix, backend: { service: { name: auth-service, port: { name: http } } } }
+          - { path: /api/users, pathType: Prefix, backend: { service: { name: auth-service, port: { name: http } } } }
+          - { path: /api/admins, pathType: Prefix, backend: { service: { name: auth-service, port: { name: http } } } }
+          - { path: /api/roles, pathType: Prefix, backend: { service: { name: auth-service, port: { name: http } } } }
+          - { path: /api/orgs, pathType: Prefix, backend: { service: { name: org-service, port: { name: http } } } }
+          - { path: /api/classes, pathType: Prefix, backend: { service: { name: org-service, port: { name: http } } } }
+          - { path: /api/subjects, pathType: Prefix, backend: { service: { name: org-service, port: { name: http } } } }
+          - { path: /api/chapters, pathType: Prefix, backend: { service: { name: org-service, port: { name: http } } } }
+          - { path: /api/contact, pathType: Prefix, backend: { service: { name: org-service, port: { name: http } } } }
+          - { path: /api/questions, pathType: Prefix, backend: { service: { name: question-service, port: { name: http } } } }
+          - { path: /api/question-papers, pathType: Prefix, backend: { service: { name: question-service, port: { name: http } } } }
+          - { path: /api/exams, pathType: Prefix, backend: { service: { name: exam-service, port: { name: http } } } }

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: exam-config
+  labels:
+    app.kubernetes.io/part-of: online-exam
+data:
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_NAME: m2its
+  DB_USE_SSL: "false"
+  DB_POOL_SIZE: "10"
+  JWT_ISSUER: m2i-online-exam
+  JWT_TTL: 1h
+  QUESTION_SERVICE_URL: http://question-service:8080
+  # JSON (Elastic Common Schema) logs for the cluster log stack.
+  LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
+  API_DOCS_ENABLED: "true"

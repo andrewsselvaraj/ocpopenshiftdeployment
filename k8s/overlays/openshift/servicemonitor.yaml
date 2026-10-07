@@ -1,0 +1,17 @@
+# Scraped by OpenShift user-workload monitoring (enable it once per cluster, see the guide).
+# Metrics then appear in the console under Observe -> Metrics, e.g. http_server_requests_seconds_count.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: online-exam
+  labels: { app.kubernetes.io/part-of: online-exam }
+spec:
+  selector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values: [auth-service, org-service, question-service, exam-service]
+  endpoints:
+    - port: management
+      path: /actuator/prometheus
+      interval: 30s

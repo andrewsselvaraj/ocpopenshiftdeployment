@@ -1,0 +1,108 @@
+# Defaults shared by every service (imported via spring.config.import).
+# Everything environment-specific comes from environment variables (ConfigMap / Secret in k8s/OCP).
+server:
+  port: 8080
+  shutdown: graceful
+  forward-headers-strategy: framework
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:m2its}?useUnicode=true&characterEncoding=UTF-8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&useSSL=${DB_USE_SSL:false}&allowPublicKeyRetrieval=true
+    username: ${DB_USER:m2its}
+    password: ${DB_PASSWORD:}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      minimum-idle: 2
+      connection-timeout: 5000
+      max-lifetime: 1800000
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema; Hibernate never alters it.
+      ddl-auto: none
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.jdbc.batch_size: 50
+      hibernate.order_inserts: true
+  flyway:
+    # Works on both an empty database and the existing m2its dump:
+    # V1 scripts use CREATE TABLE IF NOT EXISTS, later versions evolve the schema.
+    baseline-on-migrate: true
+    baseline-version: 0
+  data:
+    web:
+      pageable:
+        serialization-mode: via_dto
+        max-page-size: 200
+  jackson:
+    default-property-inclusion: non_null
+
+springdoc:
+  api-docs:
+    enabled: ${API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${API_DOCS_ENABLED:true}
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      issuer: ${JWT_ISSUER:m2i-online-exam}
+      access-token-ttl: ${JWT_TTL:1h}
+
+management:
+  server:
+    # Actuator on a separate port: probes and Prometheus use it, Routes/Ingress never expose it.
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    correlation: "[%X{requestId:-}] "
+  level:
+    root: INFO
+    com.m2i.exam: INFO
+
+---
+# "local" profile: runs a service with an in-memory H2 database (MySQL mode) and no external
+# dependencies. Used by the automated tests and the local smoke test - never in a cluster.
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:${spring.application.name};MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:local-development-secret-not-for-production-use}
+
+management:
+  server:
+    port: ${server.port}
